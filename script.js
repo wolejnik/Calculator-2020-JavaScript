@@ -45,7 +45,7 @@ class Calculator {
   
     _calculateByOperation(operation, a, b) {
       
-      if(b === 0){
+      if(b === 0) {
         return 0;
       }
 
@@ -65,7 +65,7 @@ class Calculator {
     calculate() {
       const a = parseFloat(this.lastValue);
       const b = parseFloat(this.currentValue);
-      if (isNaN(a) || isNaN(b))  {
+      if (isNaN(a) || isNaN(b)) {
         return;
       }
       this.result = this._calculateByOperation(this.operation, a, b);
