@@ -44,11 +44,6 @@ class Calculator {
     }
   
     _calculateByOperation(operation, a, b) {
-      
-      if(b === 0) {
-        return 0;
-      }
-
       if (operation === "+") {
         return a + b;
       } else if (operation === "-") {
@@ -56,6 +51,9 @@ class Calculator {
       } else if (operation === "*") {
         return a * b;
       } else if (operation === "÷") {
+        if(b === 0) {
+          return 0;
+        }
         return a / b;
       } else {
         console.error(`Unknown operation ${operation}`);
