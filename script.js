@@ -1,4 +1,4 @@
-((document) => { //not poluting globals
+((document) => {
 
   class Calculator {
   constructor(lastValueInput, currentValueInput) {
@@ -48,7 +48,6 @@
   }
 
   setOperation(operation) {
-      // Gdy wciśniemy cyfrę a następnie kilka razy różne bądź te same operatory to przestaje działać
       if (this.currentValue.length === 0) {
           this.operation = operation;
           return;
