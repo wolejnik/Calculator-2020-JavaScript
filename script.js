@@ -2,79 +2,86 @@
 
   class Calculator {
   constructor(lastValueInput, currentValueInput) {
-      this.currentValue = '';
-      this.lastValue = '';
-      this.operation = undefined;
-      this.result = '';
-      this.lastValueInput = lastValueInput;
-      this.currentValueInput = currentValueInput;
-      this.equalsPressed = false;
+    this.currentValue = '';
+    this.lastValue = '';
+    this.operation = undefined;
+    this.result = '';
+    this.lastValueInput = lastValueInput;
+    this.currentValueInput = currentValueInput;
+    this.equalsPressed = false;
   }
 
   addDigit(digit) {
-      this.currentValue += digit;
+    this.currentValue += digit;
   }
 
   addDot() {
-      if (this.currentValue.toString().includes('.')) {
-          return;
-      }
-      this.currentValue += '.';
+    if (this.currentValue.toString().includes('.')) {
+        return;
+    }
+    this.currentValue += '.';
   }
 
   deleteLast() {
-      if (this.equalsPressed) {
-          this.deleteAll()
-      } else {
-          this.currentValue = this.currentValue.toString().slice(0, -1);
-          this.currentValueInput.innerText = this.currentValue;
-      }
+    if (this.equalsPressed) {
+      this.deleteAll()
+    } else {
+      this.currentValue = this.currentValue.toString().slice(0, -1);
+      this.currentValueInput.innerText = this.currentValue;
+    }
   }
 
   deleteAll() {
-      this.currentValue = '';
-      this.lastValue = '';
-      this.result = '';
-      this.currentValueInput.innerText = '';
-      this.equalsPressed = false;
+    this.currentValue = '';
+    this.lastValue = '';
+    this.result = '';
+    this.currentValueInput.innerText = '';
+    this.equalsPressed = false;
   }
 
   _updateDisplayWith(value) {
-      this.currentValueInput.innerText = '' + value;
+    this.currentValueInput.innerText = '' + value;
   }
 
   updateDisplay() {
-      this._updateDisplayWith(this.currentValue);
+    this._updateDisplayWith(this.currentValue);
   }
 
   setOperation(operation) {
-      if (this.currentValue.length === 0) {
-          this.operation = operation;
-          return;
-      }
+    if (this.currentValue.length === 0) {
       this.operation = operation;
-      if (!this.equalsPressed) {
-          this.lastValue = this.currentValue;
-      }
-      this.equalsPressed = false;
-      this.currentValue = '';
+      return;
+    }
+    this.operation = operation;
+    if (!this.equalsPressed) {
+      this.lastValue = this.currentValue;
+    }
+    this.equalsPressed = false;
+    this.currentValue = '';
   }
 
   _calculateByOperation(operation, a, b) {
-      if (operation === '+') {
-          return a + b;
-      } else if (operation === '-') {
-          return a - b;
-      } else if (operation === '*') {
-          return a * b;
-      } else if (operation === '÷') {
-          if(b === 0) {
-              return 0;
-          }
-          return a / b;
-      } else {
-          console.error(`Unknown operation ${operation}`);
-      }
+    if (operation === '+') {
+      return a + b;
+    } else if (operation === '-') {
+      return a - b;
+    } else if (operation === '*') {
+      return a * b;
+    } else if (operation === '÷') {
+        if(b === 0) {
+          return 0;
+        }
+        return a / b;
+    } else if (operation === '^') {
+        if(b === 0) {
+          return 1;
+        }
+      return Math.pow(a, b);     
+    } else if (operation === '√') {
+      return Math.pow(b, 1/a);     
+    } else {
+      console.error(`Unknown operation ${operation}`);
+    }
   }
 
   calculate() {

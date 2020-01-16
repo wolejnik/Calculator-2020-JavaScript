@@ -30,6 +30,10 @@ html {
   grid-column: span 2;
 }
 
+.span-four {
+  grid-column: span 4;
+}
+
 .output {
   grid-column: 1 / -1;
   background-color: rgba(0, 0, 0, .75);
