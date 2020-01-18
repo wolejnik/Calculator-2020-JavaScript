@@ -30,6 +30,10 @@ html {
   grid-column: span 2;
 }
 
+.span-four {
+  grid-column: span 4;
+}
+
 .output {
   grid-column: 1 / -1;
   background-color: rgba(0, 0, 0, .75);
@@ -45,4 +49,8 @@ html {
 .output .current-operand {
   color: white;
   font-size: 2.5rem;
+}
+
+.custom-select {
+  width: 17.5rem;
 }
