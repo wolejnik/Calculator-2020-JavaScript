@@ -3,6 +3,10 @@
 	const isNumber = x =>  /^-?[0-9]+(\.[0-9]+)?$/.test(x)
 
 	const Operators = {
+		'U': 3, // USD
+		'E': 3, // EUR
+		'C': 3, // CHF
+		'N': 3, // NDK
 		'^': 3,
 		'√': 3,
 		'÷': 2,
@@ -32,7 +36,8 @@
 		this.lastValueInput = lastValueInput;
 		this.currentValueInput = currentValueInput;
 		this.equalsPressed = false;
-		this.expressionToCalculate = '';
+    this.expressionToCalculate = '';
+    this.currencies = {};
   }
 
   addDigit(digit) {
@@ -54,7 +59,7 @@
 		} else {
 			this.currentValue = this.currentValue.toString().slice(0, -1);
 			this.expressionToCalculate = this.expressionToCalculate.toString().slice(0, -2)
-      this.currentValueInput.innerText = this.currentValue;
+      // this.currentValueInput.innerText = this.currentValue;
       calc.updateDisplay();
 		}
   }
@@ -91,53 +96,43 @@
 		this.currentValue = '';
   }
 
-  _calculateByOperation(operation, a, b) {
-      if (operation === '+') {
-        return a + b;
-      } else if (operation === '-') {
-          return a - b;
-      } else if (operation === '*') {
-          return a * b;
-      } else if (operation === '÷') {
-          if(b === 0) {
-              return 0;
-          }
-          return a / b;
-      } else if (operation === '^') {
-          if(b === 0) {
-              return 1;
-          }
-          return Math.pow(a, b);     
-      } else if (operation === '√') {
-          return Math.pow(a, 1/b);     
-      } else {
-          console.error(`Unknown operation ${operation}`);
-      }
-  }
-
   rpn(expression2) {
     let resultStack = [];
     let expression = expression2.split(" ");
 
     for (let i = 0; i < expression.length; i++) {
-      if (!isNaN(parseFloat(expression[i]))) {
-        resultStack.push(parseFloat(expression[i]));
+      const token = expression[i];
+      if (!isNaN(parseFloat(token))) {
+        resultStack.push(parseFloat(token));
       } else {
-        let v1 = parseFloat(resultStack.pop());
-        let v2 = parseFloat(resultStack.pop());
+        if(['U', 'E', 'C', 'N'].includes(token)){
+          var v1 = parseFloat(resultStack.pop());
+        } else {
+          var v1 = parseFloat(resultStack.pop());
+          var v2 = parseFloat(resultStack.pop());
+        }
+        
 
-        if (expression[i] === "+") {
+        if (token === "+") {
         resultStack.push(v1 + v2);
-        } else if (expression[i] === "-") {
+        } else if (token === "-") {
         resultStack.push(v2 - v1);
-        } else if (expression[i] === "*") {
+        } else if (token === "*") {
         resultStack.push(v1 * v2);
-        } else if (expression[i] === "÷") {
+        } else if (token === "÷") {
         resultStack.push(v2 / v1);
-        } else if (expression[i] === "^") {
+        } else if (token === "^") {
         resultStack.push(Math.pow(v2, v1));
-        } else if (expression[i] === "√") {
+        } else if (token === "√") {
         resultStack.push(Math.pow(v1, 1/v2));
+        } else if (token === "U") {
+        resultStack.push(this.getMoneyInPLN(v1, 'USD'));
+        } else if (token === "E") {
+        resultStack.push(this.getMoneyInPLN(v1, 'EUR'));
+        } else if (token === "C") {
+        resultStack.push(this.getMoneyInPLN(v1, 'CHF'));
+        } else if (token === "N") {
+        resultStack.push(this.getMoneyInPLN(v1, 'NOK'));
         }
       }
     }
@@ -147,7 +142,7 @@
     } else {
       return resultStack.pop();
     }
-}
+  }
 
 
   fromInfixToPrefix(infixNotationTokens) {
@@ -191,32 +186,60 @@
     return infix.join(' ');
   }
 
-tokenize(expression) {
-  const result = [];
-  let currentDigit = '';
-  const addCurrentDigit = () => { 
-    if (currentDigit !== '') {
-      if (!isNumber(currentDigit)) {
-        throw ('Invalid Digit ' + currentDigit );
+  tokenize(expression) {
+    const result = [];
+    let currentDigit = '';
+    const addCurrentDigit = () => { 
+      if (currentDigit !== '') {
+        if (!isNumber(currentDigit)) {
+          throw ('Invalid Digit ' + currentDigit );
+        }
+        result.push(currentDigit); 
+        currentDigit = '';
       }
-      result.push(currentDigit); 
-      currentDigit = '';
     }
+    
+    const expresionWithoutSpaces = expression.replace(/\s+/g, "");
+    for (const token of expresionWithoutSpaces) {
+      if (/[0-9]|\./.test(token)) { 
+        currentDigit += token;
+      } else if (Operators[token] !== undefined) {
+        addCurrentDigit();
+        result.push(token);
+      } else {
+        throw 'Invalid token ' + token;
+      }
+    }
+    addCurrentDigit();
+    return result;
   }
-  
-  const expresionWithoutSpaces = expression.replace(/\s+/g, "");
-  for (const token of expresionWithoutSpaces) {
-    if (/[0-9]|\./.test(token)) { 
-      currentDigit += token;
-    } else if (Operators[token] !== undefined) { 
-      addCurrentDigit();
-      result.push(token);
+
+  getCurrencyRate() {
+    const currency = document.getElementById("selectCurrency").options[document.getElementById("selectCurrency").selectedIndex].value;
+
+    if (this.currencies[currency]) {
+      return;
     } else {
-      throw 'Invalid token ' + token;
+      fetch(`http://api.nbp.pl/api/exchangerates/rates/a/${currency}`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((myJson) => {
+        this.currencies[currency] = myJson.rates[0].mid;
+        this.expressionToCalculate += currency.toString().slice(0, -2);
+        calc.updateDisplay();
+      });
     }
   }
-  addCurrentDigit();
-  return result;
+
+  getMoneyInPLN(value, currency) {
+    let currencyRate = this.currencies[currency];
+    if (currencyRate) {
+        return value * currencyRate;
+    } else {
+        this.getCurrencyRate(currency);
+        return false;
+    }
 }
 
   calculate() {
@@ -250,6 +273,7 @@ const initCalcListeners = (calc) => {
   const equalsButton = document.querySelector('.btn-success');
   const deleteAllButton = document.querySelector('.delete-all');
   const deleteButton  = document.querySelector('.delete-one');
+  const currency = document.getElementById("selectCurrency");
 
   initClickListenersForButtonsArray(digitalButtons, text => calc.addDigit(text));
   initClickListenersForButtonsArray(operationsButton, text => calc.setOperation(text));
@@ -257,13 +281,13 @@ const initCalcListeners = (calc) => {
   equalsButton.addEventListener('click', () => calc.calculate());
   deleteAllButton.addEventListener('click', () => calc.deleteAll());
   deleteButton.addEventListener('click', () => calc.deleteLast());
+  currency.addEventListener('change', () => calc.getCurrencyRate())
 };
 
 const lastValueInput = document.querySelector('.last-operand');
 const currentValueInput = document.querySelector('.current-operand');
 const calc = new Calculator(lastValueInput, currentValueInput);
 initCalcListeners(calc);
-
 
 })(document);
 
