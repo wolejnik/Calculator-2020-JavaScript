@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Material Design for Bootstrap fonts and icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+
+    <!-- Material Design for Bootstrap CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+
+    <title>Calculator - Patronage-2020-JavaScript</title>
+
+    <!-- My styles CSS -->
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+    <div class="calculator">
+      <div class="output">
+        <div class="current-operand"></div>
+      </div>
+      <button class="btn btn-raised btn-danger delete-all span-two">AC</button>
+      <button class="btn btn-raised btn-danger delete-one span-two">C</button>
+
+      <button class="btn btn-raised btn-info">(</button>
+      <button class="btn btn-raised btn-info">)</button>
+      <button class="btn btn-raised btn-info">-</button>
+      <button class="btn btn-raised btn-info">+</button>
+
+      <button class="btn btn-raised btn-info"><span>&#247;</span></button>
+      <button class="btn btn-raised btn-primary">1</button>
+      <button class="btn btn-raised btn-primary">2</button>
+      <button class="btn btn-raised btn-primary">3</button>
+
+      <button class="btn btn-raised btn-info">*</button>
+      <button class="btn btn-raised btn-primary">4</button>
+      <button class="btn btn-raised btn-primary">5</button>
+      <button class="btn btn-raised btn-primary">6</button>
+
+      <button class="btn btn-raised btn-info"><span>&#8730;</span></button>
+      <button class="btn btn-raised btn-primary">7</button>
+      <button class="btn btn-raised btn-primary">8</button>
+      <button class="btn btn-raised btn-primary">9</button>
+
+      <button class="btn btn-raised btn-info">^</button>
+      <button class="btn btn-raised btn-secondary">.</button>
+      <button class="btn btn-raised btn-primary">0</button>
+      <button class="btn btn-raised btn-success">=</button>
+
+      <select id="selectCurrency" class="browser-default custom-select">
+        <option selected>Wybierz walute</option>
+        <option value="USD">Dolar amerykański</option>
+        <option value="EUR">Euro</option>
+        <option value="CHF">Frank szwajcarski</option>
+        <option value="NOK">Korona norweska</option>
+      </select>
+
+
+    </div>
+
+
+    <!-- My JavaScript -->
+    <script src="calculator.js"></script>
+    <script src="script.js" defer></script>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+    <script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
+  </body>
+</html>
